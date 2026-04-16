@@ -1,121 +1,158 @@
-# Bluesky Alt Text Dataset
+---
+license: cc-by-4.0
+task_categories:
+  - image-to-text
+  - text-generation
+  - text-classification
+language:
+  - en
+  - de
+  - fr
+  - pt
+tags:
+  - bluesky
+  - alt-text
+  - accessibility
+  - image-description
+  - at-protocol
+  - a11y
+  - screen-reader
+  - vision-language
+pretty_name: "Bluesky Alt Text: 279K Curated Image Descriptions"
+size_categories:
+  - 100K<n<1M
+dataset_info:
+  features:
+    - name: alt_text
+      dtype: string
+    - name: image_alt_length
+      dtype: int64
+    - name: text
+      dtype: string
+    - name: author_handle
+      dtype: string
+    - name: author_did
+      dtype: string
+    - name: post_uri
+      dtype: string
+    - name: post_cid
+      dtype: string
+    - name: created_at
+      dtype: string
+    - name: indexed_at
+      dtype: string
+    - name: langs_json
+      dtype: string
+    - name: image_index
+      dtype: int64
+    - name: image_count_in_post
+      dtype: int64
+    - name: image_mime_type
+      dtype: string
+    - name: image_ref
+      dtype: string
+    - name: image_thumb_url
+      dtype: string
+    - name: image_fullsize_url
+      dtype: string
+    - name: source_mode
+      dtype: string
+    - name: collected_at
+      dtype: string
+    - name: query
+      dtype: string
+    - name: cursor
+      dtype: string
+    - name: raw_record_json
+      dtype: string
+---
 
-279,196 image alt-text pairs from 489 Bluesky accounts, collected via the public AT Protocol APIs. Every account in the dataset was validated to have a 90%+ alt-text rate with substantive descriptions — this is a corpus of what good alt text looks like.
+# Bluesky Alt Text: 279K Curated Image Descriptions
 
-[![License: CC BY 4.0](https://img.shields.io/badge/License-CC_BY_4.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC_BY_4.0-lightblue.svg)](https://creativecommons.org/licenses/by/4.0/)
+[![HuggingFace](https://img.shields.io/badge/HuggingFace-Dataset-FFD21E)](https://huggingface.co/datasets/lukeslp/bluesky-alt-text)
+[![GitHub](https://img.shields.io/badge/GitHub-Repo-181717)](https://github.com/data-poems/bluesky-alt-text)
+[![Rows](https://img.shields.io/badge/rows-279,196-blue)]()
+[![Authors](https://img.shields.io/badge/authors-489-green)]()
 
-## At a glance
+279,196 image alt-text pairs from 489 Bluesky accounts, collected via the public AT Protocol APIs. Every account was validated at 90%+ alt-text rate with substantive descriptions. One row per image, not per post.
 
-| | |
-|---|---|
-| **Rows** | 279,196 (one per image, not per post) |
-| **Authors** | 489 unique accounts |
-| **Mean alt text length** | 203 characters |
-| **Median alt text length** | 127 characters |
-| **Rows >100 characters** | 168,980 (60.5%) |
-| **Languages** | Primarily English (85%), plus German, French, Portuguese, and others |
-| **Format** | JSONL (gzipped), CSV (gzipped) |
-| **License** | CC-BY 4.0 |
-| **Collection date** | April 2026 |
+## Overview
+
+- **Collection period**: April 2026
+- **Total rows**: 279,196
+- **Unique authors**: 489
+- **Mean alt text length**: 203 characters
+- **Median**: 127 characters
+- **60.5%** of entries exceed 100 characters
+- **Languages**: English (85%), German (1.6%), French (0.8%), Portuguese (0.8%), 20+ others
+- **Collection method**: AT Protocol `app.bsky.feed.getAuthorFeed` (public, no auth)
 
 ## Download
 
-Grab the compressed files from the [latest release](https://github.com/data-poems/bluesky-alt-text/releases/latest):
-
-- `corpus.jsonl.gz` (89 MB) — one JSON object per line
-- `corpus.csv.gz` (77 MB) — same data, flat format
-
-## Schema
-
-Each row represents one image with alt text. A post with 4 images produces 4 rows.
-
-| Field | Type | Description |
-|---|---|---|
-| `alt_text` | string | The image description written by the author |
-| `image_alt_length` | int | Character count of the alt text |
-| `text` | string | Post body text |
-| `author_handle` | string | Bluesky handle (e.g. `tink.uk`) |
-| `author_did` | string | Decentralized identifier |
-| `post_uri` | string | AT Protocol post URI |
-| `post_cid` | string | Content identifier (hash) |
-| `created_at` | string | When the post was written (ISO 8601) |
-| `indexed_at` | string | When the post was indexed (ISO 8601) |
-| `langs_json` | string | JSON array of language tags |
-| `image_index` | int | Position of this image in the post (0-based) |
-| `image_count_in_post` | int | Total images in the post |
-| `image_mime_type` | string | MIME type (`image/jpeg`, etc.) |
-| `image_ref` | string | Blob reference hash |
-| `image_thumb_url` | string | CDN thumbnail URL |
-| `image_fullsize_url` | string | CDN full-size URL |
-| `source_mode` | string | Always `author_feed` for this corpus |
-| `collected_at` | string | When this row was collected (ISO 8601) |
-| `query` | string | Which actor this row came from |
-| `cursor` | string | API pagination cursor (for provenance) |
-| `raw_record_json` | string | Complete AT Protocol record as JSON |
+**GitHub Release** (recommended for bulk download):
+- [`corpus.jsonl.gz`](https://github.com/data-poems/bluesky-alt-text/releases/latest) (89 MB)
+- [`corpus.csv.gz`](https://github.com/data-poems/bluesky-alt-text/releases/latest) (77 MB)
 
 ## Quick start
 
 ```python
-import json
-
-with open("corpus.jsonl") as f:
-    for line in f:
-        row = json.loads(line)
-        print(f"{row['author_handle']}: {row['alt_text'][:80]}...")
-```
-
-Or load into pandas:
-
-```python
 import pandas as pd
 
-df = pd.read_json("corpus.jsonl", lines=True)
+df = pd.read_json("corpus.jsonl.gz", lines=True)
+print(f"{len(df):,} rows, {df['author_handle'].nunique()} authors")
 df["alt_text"].str.len().describe()
 ```
 
-See [`explore.ipynb`](explore.ipynb) for a full walkthrough with visualizations.
+See [`explore.ipynb`](https://github.com/data-poems/bluesky-alt-text/blob/main/explore.ipynb) for a walkthrough with visualizations.
 
-## How accounts were selected
+## Schema
 
-This is not a random sample. Every account was found through one of eight discovery strategies, then validated against the live Bluesky API.
+Each row is one image with alt text. A post with 4 images produces 4 rows.
 
-**Discovery:**
-1. Accounts highlighted by the [Alt Text Hall of Fame](https://bsky.app/profile/alttexthof.bsky.social)
-2. Social graph of the Hall of Fame (who they follow, who follows them)
-3. Accessibility keyword search (`searchActors` for "alt text", "a11y", "WCAG", etc.)
-4. Network tracing from 8 accessibility seed accounts
-5. International accessibility search (German, French, Portuguese, Japanese, Spanish, Dutch, Swedish)
-6. Institutional search (museums, zoos, aquariums, space agencies, botanical gardens)
-7. Photography and visual arts accounts
-8. Jetstream firehose sampling for wild-caught alt text writers
+| Field | Description |
+|---|---|
+| `alt_text` | The image description written by the author |
+| `image_alt_length` | Character count |
+| `text` | Post body text |
+| `author_handle` | Bluesky handle (e.g. `tink.uk`) |
+| `author_did` | Decentralized identifier |
+| `post_uri` / `post_cid` | AT Protocol post identifiers |
+| `created_at` / `indexed_at` | Timestamps (ISO 8601) |
+| `langs_json` | Language tags as JSON array |
+| `image_index` | Position of this image in the post (0-based) |
+| `image_count_in_post` | Total images in the post |
+| `image_mime_type` | MIME type |
+| `image_thumb_url` / `image_fullsize_url` | CDN image URLs |
+| `raw_record_json` | Complete AT Protocol record |
 
-**Validation gate (every account must pass all three):**
-- 90%+ of their images have non-empty alt text
-- Average alt text length of 50+ characters
-- At least 10 images to confirm the pattern holds
+## Account selection
 
-The full account list is in [`collector/actors.txt`](collector/actors.txt).
+Not a random sample. 495 accounts found through eight strategies, then validated against the live API.
 
-## What's in here
+**Discovery strategies:**
+1. [Alt Text Hall of Fame](https://bsky.app/profile/alttexthof.bsky.social) honorees and social graph
+2. Accessibility keyword search ("alt text", "a11y", "WCAG", "screen reader")
+3. Network tracing from 8 accessibility seed accounts
+4. International search (German, French, Portuguese, Japanese, Spanish, Dutch, Swedish)
+5. Institutional search (museums, zoos, aquariums, space agencies)
+6. Photography and visual arts accounts
+7. Jetstream firehose sampling for wild-caught writers
 
-```
-corpus.jsonl.gz          # The dataset (279K rows, 89 MB compressed)
-corpus.csv.gz            # Same data in CSV format (77 MB compressed)
-explore.ipynb            # Jupyter notebook: load, explore, visualize
-collector/               # The tool that built this dataset
-  bluesky_alt_text_scraper.py
-  actors.txt
-  requirements.txt
-LICENSE                  # CC-BY 4.0
-```
+**Validation gate:**
+- 90%+ of images have non-empty alt text
+- Average alt text 50+ characters
+- At least 10 images
+
+Full account list: [`collector/actors.txt`](https://github.com/data-poems/bluesky-alt-text/blob/main/collector/actors.txt)
 
 ## Use cases
 
-- **Training alt text generators**: Fine-tune vision-language models on high-quality human-written descriptions
-- **Benchmarking**: Compare generated alt text against this corpus for quality evaluation
-- **Accessibility research**: Study how people describe images for screen reader users
-- **Style analysis**: Explore description patterns across museums, photographers, scientists, advocates
-- **Contrastive training**: Pair with a firehose sample (included in the collector) to learn what distinguishes good alt text from minimal effort
+- Fine-tune vision-language models on quality human-written descriptions
+- Benchmark generated alt text against real-world examples
+- Study how people describe images for screen reader users
+- Compare description styles across museums, photographers, scientists, advocates
+- Pair with a firehose sample for contrastive training (good vs. minimal alt text)
 
 ## Citation
 
@@ -132,6 +169,6 @@ LICENSE                  # CC-BY 4.0
 
 ## License
 
-[CC-BY 4.0](LICENSE). Use it for anything — just credit the source.
+[CC-BY 4.0](LICENSE). Use it for anything, just credit the source.
 
-The alt text in this dataset was written by Bluesky users and is collected from public posts via Bluesky's documented APIs. No private data, no scraping, no authentication required.
+Collected from public Bluesky posts via documented AT Protocol APIs. No private data, no scraping, no authentication required.
