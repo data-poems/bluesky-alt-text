@@ -72,7 +72,7 @@ dataset_info:
     - name: corpus
       num_examples: 279196
     - name: firehose
-      num_examples: 4276
+      num_examples: 125645
 ---
 
 # Bluesky Alt Text: 279K Curated Image Descriptions
@@ -85,13 +85,13 @@ dataset_info:
 
 279,196 image alt-text pairs from 489 Bluesky accounts, collected via the public AT Protocol APIs. Every account validated at 90%+ alt-text rate with substantive descriptions. One row per image, not per post.
 
-Includes a 4,276-row firehose sample for contrastive analysis against the targeted corpus.
+Includes a 125K-row firehose sample (14.5 hours of live network traffic) for contrastive analysis.
 
 ## Overview
 
 - **Collection period**: April 2026
-- **Total rows**: 279,196 (corpus) + 4,276 (firehose)
-- **Unique authors**: 489 (corpus), broad sample (firehose)
+- **Total rows**: 279,196 (corpus) + 125,645 (firehose) = 404,841
+- **Unique authors**: 489 (corpus), 34,785 (firehose)
 - **Mean alt text length**: 203 characters
 - **Median**: 127 characters
 - **60.5%** of entries exceed 100 characters
@@ -103,7 +103,7 @@ Includes a 4,276-row firehose sample for contrastive analysis against the target
 **GitHub Release** (recommended for bulk download):
 - [`corpus.jsonl.gz`](https://github.com/data-poems/bluesky-alt-text/releases/latest) (89 MB)
 - [`corpus.csv.gz`](https://github.com/data-poems/bluesky-alt-text/releases/latest) (77 MB)
-- [`firehose.jsonl.gz`](https://github.com/data-poems/bluesky-alt-text/releases/latest) (1.6 MB)
+- [`firehose.jsonl.gz`](https://github.com/data-poems/bluesky-alt-text/releases/latest) (49 MB)
 
 ## Quick Start
 
@@ -126,8 +126,8 @@ The targeted corpus and firehose sample are separate files with the same schema.
 | | Targeted corpus | Firehose sample |
 |---|---|---|
 | **File** | `corpus.jsonl.gz` | `firehose.jsonl.gz` |
-| **Rows** | 279,196 | 4,276 |
-| **Source** | `getAuthorFeed` from 495 validated accounts | Jetstream live stream (30-min window) |
+| **Rows** | 279,196 | 125,645 |
+| **Source** | `getAuthorFeed` from 495 validated accounts | Jetstream live stream (14.5-hour window) |
 | **Alt text quality** | High (accounts verified at 90%+ rate) | Mixed (reflects platform-wide behavior) |
 | **Use case** | Training, benchmarking, style analysis | Adoption rates, contrastive training |
 | **Reproducibility** | Deterministic from account list | Time-dependent snapshot |
