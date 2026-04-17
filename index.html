@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Bluesky Alt Text Dataset</title>
+  <meta name="description" content="279K curated image alt-text pairs from 489 Bluesky accounts. Validated at 90%+ alt-text rate." />
+  <meta property="og:title" content="Bluesky Alt Text Dataset" />
+  <meta property="og:description" content="279K curated image descriptions from Bluesky. Targeted corpus + firehose sample for contrastive analysis." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://dr.eamer.dev/downloads/bluesky-alt-text/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <style>
+    :root {
+      --bg: #fafafa;
+      --surface: #fff;
+      --text: #111;
+      --text-mid: #555;
+      --text-light: #888;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --border: #d4d4d4;
+      --border-light: #e5e5e5;
+      --code-bg: #f4f4f5;
+      --corpus: #2563eb;
+      --firehose: #dc2626;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    body::before {
+      content: '';
+      display: block;
+      height: 3px;
+      background: var(--accent);
+    }
+
+    .skip-link {
+      position: absolute; top: -40px; left: 0;
+      background: var(--accent); color: #fff;
+      padding: 8px 16px; text-decoration: none; z-index: 100;
+    }
+    .skip-link:focus { top: 3px; }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 56px 24px 48px;
+    }
+
+    header {
+      margin-bottom: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    header h1 {
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+
+    .subtitle {
+      color: var(--text-mid);
+      font-size: 0.95rem;
+      margin-top: 8px;
+    }
+
+    .header-links {
+      display: flex;
+      gap: 20px;
+      font-size: 0.85rem;
+      padding-top: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 500;
+    }
+
+    .header-links a {
+      color: var(--text-mid);
+      text-decoration: none;
+    }
+    .header-links a:hover { color: var(--accent); }
+
+    .back {
+      display: inline-block;
+      color: var(--text-mid);
+      text-decoration: none;
+      font-size: 0.85rem;
+      margin-bottom: 24px;
+      letter-spacing: 0.02em;
+    }
+    .back:hover { color: var(--accent); }
+
+    .badges {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-blue { background: #dbeafe; color: #1e40af; }
+    .badge-green { background: #dcfce7; color: #166534; }
+    .badge-red { background: #fee2e2; color: #991b1b; }
+    .badge-gray { background: #f4f4f5; color: #52525b; }
+
+    .divider {
+      height: 1px;
+      background: var(--border-light);
+      margin: 48px 0;
+    }
+
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 16px;
+    }
+
+    /* Stat cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border-light);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 48px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+
+    .stat-value.corpus-color { color: var(--corpus); }
+    .stat-value.firehose-color { color: var(--firehose); }
+
+    .stat-label {
+      color: var(--text-mid);
+      font-size: 0.75rem;
+      margin-top: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 500;
+    }
+
+    /* Chart containers */
+    .chart-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .chart-box {
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      background: var(--surface);
+      padding: 20px;
+    }
+
+    .chart-box h3 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .chart-box canvas {
+      width: 100%;
+      height: 220px;
+      display: block;
+    }
+
+    .chart-full {
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      background: var(--surface);
+      padding: 20px;
+      margin-bottom: 48px;
+    }
+
+    .chart-full h3 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .chart-full canvas {
+      width: 100%;
+      height: 200px;
+      display: block;
+    }
+
+    /* Legend */
+    .legend {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      margin-bottom: 24px;
+      font-size: 0.8rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+    }
+
+    /* Comparison table */
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 48px;
+      font-size: 0.85rem;
+    }
+
+    .compare-table th, .compare-table td {
+      text-align: left;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .compare-table th {
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-mid);
+    }
+
+    .compare-table td:first-child { font-weight: 500; }
+
+    /* Download buttons */
+    .downloads {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 48px;
+    }
+
+    .dl-card {
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      background: var(--surface);
+      padding: 20px;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color 0.15s;
+    }
+
+    .dl-card:hover { border-color: var(--accent); }
+
+    .dl-card h3 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .dl-card .dl-meta {
+      color: var(--text-mid);
+      font-size: 0.75rem;
+    }
+
+    /* Bar chart helper */
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 0.78rem;
+    }
+
+    .bar-label {
+      width: 100px;
+      text-align: right;
+      color: var(--text-mid);
+      flex-shrink: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .bar-track {
+      flex: 1;
+      height: 18px;
+      background: var(--code-bg);
+      border-radius: 3px;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.5s ease;
+    }
+
+    .bar-fill.corpus { background: var(--corpus); }
+    .bar-fill.firehose { background: var(--firehose); }
+
+    .bar-value {
+      width: 50px;
+      color: var(--text-light);
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+    }
+
+    /* Top authors */
+    .author-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+      font-size: 0.75rem;
+    }
+
+    .author-bar .name {
+      width: 180px;
+      text-align: right;
+      color: var(--text-mid);
+      flex-shrink: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .author-bar .track {
+      flex: 1;
+      height: 14px;
+      background: var(--code-bg);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .author-bar .fill {
+      height: 100%;
+      background: var(--corpus);
+      border-radius: 2px;
+      opacity: 0.7;
+    }
+
+    .author-bar .count {
+      width: 45px;
+      color: var(--text-light);
+      font-variant-numeric: tabular-nums;
+      flex-shrink: 0;
+    }
+
+    footer {
+      padding-top: 32px;
+      border-top: 1px solid var(--border-light);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.8rem;
+      color: var(--text-light);
+    }
+
+    footer a { color: var(--text-mid); text-decoration: none; }
+    footer a:hover { color: var(--accent); }
+
+    .footer-links { display: flex; gap: 20px; }
+
+    a:focus-visible, button:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    @media (max-width: 640px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .chart-row { grid-template-columns: 1fr; }
+      .downloads { grid-template-columns: 1fr; }
+      .bar-label { width: 70px; }
+      .author-bar .name { width: 120px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+
+  <main id="main" class="container">
+    <a href="/downloads/" class="back">&larr; Downloads</a>
+
+    <header>
+      <div>
+        <h1>Bluesky Alt Text</h1>
+        <p class="subtitle">279K curated image descriptions from 489 validated accounts</p>
+      </div>
+      <nav class="header-links" aria-label="Dataset links">
+        <a href="https://github.com/data-poems/bluesky-alt-text">GitHub</a>
+        <a href="https://huggingface.co/datasets/lukeslp/bluesky-alt-text">HuggingFace</a>
+      </nav>
+    </header>
+
+    <div class="badges">
+      <span class="badge badge-blue">279,196 rows</span>
+      <span class="badge badge-green">489 authors</span>
+      <span class="badge badge-gray">CC-BY 4.0</span>
+      <span class="badge badge-red">+ firehose</span>
+    </div>
+
+    <!-- Key stats -->
+    <div class="stats-grid" role="list" aria-label="Key statistics">
+      <div class="stat-card" role="listitem">
+        <div class="stat-value corpus-color">279K</div>
+        <div class="stat-label">Corpus rows</div>
+      </div>
+      <div class="stat-card" role="listitem">
+        <div class="stat-value firehose-color">126K</div>
+        <div class="stat-label">Firehose rows</div>
+      </div>
+      <div class="stat-card" role="listitem">
+        <div class="stat-value">203</div>
+        <div class="stat-label">Mean alt chars (corpus)</div>
+      </div>
+      <div class="stat-card" role="listitem">
+        <div class="stat-value">60.5%</div>
+        <div class="stat-label">&gt;100 chars (corpus)</div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background: var(--corpus)"></div> Targeted corpus</div>
+      <div class="legend-item"><div class="legend-dot" style="background: var(--firehose)"></div> Firehose sample</div>
+    </div>
+
+    <!-- Alt text length distribution -->
+    <section class="chart-full" aria-label="Alt text length distribution">
+      <h3>Alt text length distribution</h3>
+      <div id="length-chart"></div>
+    </section>
+
+    <!-- Language + Timeline side by side -->
+    <div class="chart-row">
+      <section class="chart-box" aria-label="Language breakdown">
+        <h3>Languages</h3>
+        <div id="lang-chart"></div>
+      </section>
+
+      <section class="chart-box" aria-label="Comparison">
+        <h3>Corpus vs. Firehose</h3>
+        <table class="compare-table" style="margin-bottom: 0">
+          <tbody>
+            <tr><td>Rows</td><td>279,196</td><td>125,645</td></tr>
+            <tr><td>Authors</td><td>489</td><td>34,785</td></tr>
+            <tr><td>Mean length</td><td>203 ch</td><td>282 ch</td></tr>
+            <tr><td>Median</td><td>127 ch</td><td>84 ch</td></tr>
+            <tr><td>&gt;100 chars</td><td>60.5%</td><td>44.9%</td></tr>
+            <tr><td>&gt;200 chars</td><td>27.8%</td><td>29.5%</td></tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+
+    <!-- Top contributors -->
+    <section class="chart-full" aria-label="Top contributors">
+      <h3>Top 15 contributors (corpus)</h3>
+      <div id="authors-chart"></div>
+    </section>
+
+    <!-- Timeline -->
+    <section class="chart-full" aria-label="Posts over time">
+      <h3>Corpus posts by month</h3>
+      <div id="timeline-chart"></div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Downloads -->
+    <h2>Download</h2>
+    <div class="downloads">
+      <a class="dl-card" href="https://github.com/data-poems/bluesky-alt-text/releases/latest/download/corpus.jsonl.gz">
+        <h3>corpus.jsonl.gz</h3>
+        <div class="dl-meta">279K rows &middot; 89 MB</div>
+      </a>
+      <a class="dl-card" href="https://github.com/data-poems/bluesky-alt-text/releases/latest/download/corpus.csv.gz">
+        <h3>corpus.csv.gz</h3>
+        <div class="dl-meta">279K rows &middot; 77 MB</div>
+      </a>
+      <a class="dl-card" href="https://github.com/data-poems/bluesky-alt-text/releases/latest/download/firehose.jsonl.gz">
+        <h3>firehose.jsonl.gz</h3>
+        <div class="dl-meta">126K rows &middot; ~16 MB</div>
+      </a>
+    </div>
+
+    <footer>
+      <span>Luke Steuber</span>
+      <nav class="footer-links" aria-label="Footer links">
+        <a href="https://github.com/data-poems/bluesky-alt-text">GitHub</a>
+        <a href="https://huggingface.co/datasets/lukeslp/bluesky-alt-text">HuggingFace</a>
+        <a href="https://bsky.app/profile/lukesteuber.com">Bluesky</a>
+        <a href="/downloads/">Downloads</a>
+      </nav>
+    </footer>
+  </main>
+
+  <script>
+    const DATA = {
+      corpus: {
+        lengthHist: [
+          { range: '0-10', pct: 0.3 }, { range: '10-25', pct: 2.8 },
+          { range: '25-50', pct: 10.5 }, { range: '50-100', pct: 25.4 },
+          { range: '100-150', pct: 19.8 }, { range: '150-200', pct: 13.3 },
+          { range: '200-300', pct: 11.9 }, { range: '300-500', pct: 8.0 },
+          { range: '500-1K', pct: 5.7 }, { range: '1K-5K', pct: 2.3 }
+        ],
+        topLangs: [
+          { lang: 'en', pct: 87.5 }, { lang: 'de', pct: 1.7 },
+          { lang: 'en-US', pct: 0.9 }, { lang: 'fr', pct: 0.9 },
+          { lang: 'sq', pct: 0.6 }, { lang: 'pt', pct: 0.5 },
+          { lang: 'es', pct: 0.5 }, { lang: 'nl', pct: 0.2 }
+        ],
+        topAuthors: [
+          { handle: 'firefaerie81', count: 6828 },
+          { handle: 'dashdashado', count: 6386 },
+          { handle: 'epsteinweb', count: 6146 },
+          { handle: 'lukesteuber.com', count: 6019 },
+          { handle: 'azgibsonz', count: 5538 },
+          { handle: 'majima.club', count: 5427 },
+          { handle: 'galaxyzoo.org', count: 5000 },
+          { handle: 'guggenheim', count: 5000 },
+          { handle: 'listigeplaylists', count: 4998 },
+          { handle: 'catsofyore', count: 4610 },
+          { handle: 'magpie.tips', count: 4375 },
+          { handle: 'skwinnicki', count: 4082 },
+          { handle: 'gonzo', count: 3894 },
+          { handle: 'ethankocak.com', count: 3653 },
+          { handle: 'maladroithe', count: 3590 }
+        ],
+        byMonth: [
+          { m: '2023-04', c: 178 }, { m: '2023-07', c: 2921 }, { m: '2023-10', c: 5031 },
+          { m: '2024-01', c: 4363 }, { m: '2024-04', c: 5148 }, { m: '2024-07', c: 4714 },
+          { m: '2024-10', c: 7639 }, { m: '2024-11', c: 12540 }, { m: '2024-12', c: 12906 },
+          { m: '2025-01', c: 11744 }, { m: '2025-04', c: 10705 }, { m: '2025-07', c: 10514 },
+          { m: '2025-10', c: 11612 }, { m: '2026-01', c: 10473 }, { m: '2026-04', c: 11434 }
+        ]
+      },
+      firehose: {
+        lengthHist: [
+          { range: '0-10', pct: 5.2 }, { range: '10-25', pct: 12.3 },
+          { range: '25-50', pct: 17.4 }, { range: '50-100', pct: 19.7 },
+          { range: '100-150', pct: 10.5 }, { range: '150-200', pct: 5.1 },
+          { range: '200-300', pct: 5.8 }, { range: '300-500', pct: 5.3 },
+          { range: '500-1K', pct: 9.2 }, { range: '1K-5K', pct: 9.4 }
+        ]
+      }
+    };
+
+    const CORPUS_COLOR = '#2563eb';
+    const FIREHOSE_COLOR = '#dc2626';
+
+    function buildLengthChart() {
+      const el = document.getElementById('length-chart');
+      const max = Math.max(
+        ...DATA.corpus.lengthHist.map(d => d.pct),
+        ...DATA.firehose.lengthHist.map(d => d.pct)
+      );
+
+      DATA.corpus.lengthHist.forEach((d, i) => {
+        const fh = DATA.firehose.lengthHist[i];
+        const row = document.createElement('div');
+        row.className = 'bar-row';
+        row.innerHTML = `
+          <div class="bar-label">${d.range}</div>
+          <div class="bar-track">
+            <div class="bar-fill corpus" style="width: ${(d.pct / max * 100).toFixed(1)}%"></div>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill firehose" style="width: ${(fh.pct / max * 100).toFixed(1)}%"></div>
+          </div>
+          <div class="bar-value">${d.pct}% / ${fh.pct}%</div>
+        `;
+        el.appendChild(row);
+      });
+    }
+
+    function buildLangChart() {
+      const el = document.getElementById('lang-chart');
+      const max = DATA.corpus.topLangs[0].pct;
+
+      DATA.corpus.topLangs.forEach(d => {
+        const row = document.createElement('div');
+        row.className = 'bar-row';
+        row.innerHTML = `
+          <div class="bar-label">${d.lang}</div>
+          <div class="bar-track">
+            <div class="bar-fill corpus" style="width: ${(d.pct / max * 100).toFixed(1)}%"></div>
+          </div>
+          <div class="bar-value">${d.pct}%</div>
+        `;
+        el.appendChild(row);
+      });
+    }
+
+    function buildAuthorsChart() {
+      const el = document.getElementById('authors-chart');
+      const max = DATA.corpus.topAuthors[0].count;
+
+      DATA.corpus.topAuthors.forEach(d => {
+        const row = document.createElement('div');
+        row.className = 'author-bar';
+        row.innerHTML = `
+          <div class="name" title="${d.handle}">${d.handle}</div>
+          <div class="track"><div class="fill" style="width: ${(d.count / max * 100).toFixed(1)}%"></div></div>
+          <div class="count">${(d.count / 1000).toFixed(1)}K</div>
+        `;
+        el.appendChild(row);
+      });
+    }
+
+    function buildTimelineChart() {
+      const el = document.getElementById('timeline-chart');
+      const canvas = document.createElement('canvas');
+      canvas.style.width = '100%';
+      canvas.style.height = '160px';
+      el.appendChild(canvas);
+
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      ctx.scale(dpr, dpr);
+
+      const W = rect.width;
+      const H = rect.height;
+      const pad = { top: 10, right: 10, bottom: 30, left: 50 };
+      const data = DATA.corpus.byMonth;
+      const max = Math.max(...data.map(d => d.c));
+
+      const xStep = (W - pad.left - pad.right) / (data.length - 1);
+
+      ctx.strokeStyle = CORPUS_COLOR;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      data.forEach((d, i) => {
+        const x = pad.left + i * xStep;
+        const y = pad.top + (1 - d.c / max) * (H - pad.top - pad.bottom);
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+
+      // Fill
+      ctx.globalAlpha = 0.1;
+      ctx.fillStyle = CORPUS_COLOR;
+      ctx.lineTo(pad.left + (data.length - 1) * xStep, H - pad.bottom);
+      ctx.lineTo(pad.left, H - pad.bottom);
+      ctx.closePath();
+      ctx.fill();
+      ctx.globalAlpha = 1;
+
+      // X labels
+      ctx.fillStyle = '#888';
+      ctx.font = '11px system-ui';
+      ctx.textAlign = 'center';
+      data.forEach((d, i) => {
+        if (i % 3 === 0) {
+          const x = pad.left + i * xStep;
+          ctx.fillText(d.m, x, H - 8);
+        }
+      });
+
+      // Y labels
+      ctx.textAlign = 'right';
+      [0, max / 2, max].forEach(v => {
+        const y = pad.top + (1 - v / max) * (H - pad.top - pad.bottom);
+        ctx.fillText((v / 1000).toFixed(0) + 'K', pad.left - 8, y + 4);
+        ctx.strokeStyle = '#e5e5e5';
+        ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(pad.left, y);
+        ctx.lineTo(W - pad.right, y);
+        ctx.stroke();
+      });
+    }
+
+    buildLengthChart();
+    buildLangChart();
+    buildAuthorsChart();
+    buildTimelineChart();
+    window.addEventListener('resize', () => {
+      document.getElementById('timeline-chart').innerHTML = '';
+      buildTimelineChart();
+    });
+  </script>
+  <script data-goatcounter="https://stats.dr.eamer.dev/count"
+          async src="https://stats.dr.eamer.dev/count.js"></script>
+</body>
+</html>
