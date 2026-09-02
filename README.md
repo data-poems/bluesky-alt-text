@@ -1,5 +1,5 @@
 ---
-license: cc-by-4.0
+license: other
 task_categories:
   - image-to-text
   - text-generation
@@ -21,7 +21,7 @@ tags:
   - a11y
   - screen-reader
   - vision-language
-pretty_name: "Bluesky Alt Text: 279K Curated Image Descriptions"
+pretty_name: "Bluesky Alt Text: Frozen April 2026 Snapshot"
 size_categories:
   - 100K<n<1M
 dataset_info:
@@ -75,15 +75,30 @@ dataset_info:
       num_examples: 125645
 ---
 
-# Bluesky Alt Text: 279K Curated Image Descriptions
+# Bluesky Alt Text: Frozen April 2026 Snapshot
 
-[![License: CC BY 4.0](https://img.shields.io/badge/License-CC_BY_4.0-lightblue.svg)](https://creativecommons.org/licenses/by/4.0/)
 [![HuggingFace](https://img.shields.io/badge/HuggingFace-Dataset-FFD21E)](https://huggingface.co/datasets/lukeslp/bluesky-alt-text)
 [![GitHub](https://img.shields.io/badge/GitHub-Repo-181717)](https://github.com/data-poems/bluesky-alt-text)
 [![Rows](https://img.shields.io/badge/rows-279,196-blue)]()
 [![Authors](https://img.shields.io/badge/authors-489-green)]()
 
-279,196 image alt-text pairs from 489 Bluesky accounts, collected via the public AT Protocol APIs. Every account validated at 90%+ alt-text rate with substantive descriptions. One row per image, not per post.
+> **Frozen historical snapshot.** These files were collected in April 2026 and
+> will not be extended into a longitudinal series. The 279K-row corpus was
+> deliberately selected from accounts with high alt-text adoption, so it must
+> not be interpreted as a representative platform adoption estimate. The
+> 14.5-hour Jetstream file is a short observed window, not a durable census.
+>
+> Rows contain author handles and DIDs, post URIs and CIDs, post text, image
+> references/URLs, collection cursors, and complete raw AT Protocol records.
+> They are identifiable public-post records, not anonymous data. Bluesky users
+> retain rights in their text; this repository does not claim authority to
+> relicense their descriptions under CC BY. See the current, minimized
+> [Bluesky Accessibility Observatory](https://huggingface.co/datasets/lukeslp/bluesky-alt-text-observatory)
+> for aggregate trends and a deletion-responsive pseudonymous sample.
+
+279,196 image alt-text pairs from 489 deliberately selected Bluesky accounts,
+collected via public AT Protocol APIs. One row represents one image, not one
+post.
 
 Includes a 125K-row firehose sample (14.5 hours of live network traffic) for contrastive analysis.
 
@@ -128,7 +143,7 @@ The targeted corpus and firehose sample are separate files with the same schema.
 | **File** | `corpus.jsonl.gz` | `firehose.jsonl.gz` |
 | **Rows** | 279,196 | 125,645 |
 | **Source** | `getAuthorFeed` from 495 validated accounts | Jetstream live stream (14.5-hour window) |
-| **Alt text quality** | High (accounts verified at 90%+ rate) | Mixed (reflects platform-wide behavior) |
+| **Selection** | Accounts screened for high alt-text use; strongly selection-biased | Time-bounded observed Jetstream window |
 | **Use case** | Training, benchmarking, style analysis | Adoption rates, contrastive training |
 | **Reproducibility** | Deterministic from account list | Time-dependent snapshot |
 
@@ -209,7 +224,7 @@ Full account list: [`collector/actors.txt`](https://github.com/data-poems/bluesk
   year      = {2026},
   publisher = {GitHub / HuggingFace},
   url       = {https://github.com/data-poems/bluesky-alt-text},
-  license   = {CC-BY-4.0},
+  license   = {See repository rights and limitations notice},
   note      = {279,196 image alt-text pairs from 489 validated Bluesky accounts}
 }
 ```
@@ -226,7 +241,6 @@ Full account list: [`collector/actors.txt`](https://github.com/data-poems/bluesk
   "sameAs": [
     "https://huggingface.co/datasets/lukeslp/bluesky-alt-text"
   ],
-  "license": "https://creativecommons.org/licenses/by/4.0/",
   "creator": {
     "@type": "Person",
     "name": "Luke Steuber",
@@ -253,11 +267,19 @@ More Bluesky tools by Luke Steuber:
 - [skymarshal](https://github.com/lukeslp/skymarshal) -- Python CLI for post and comment management
 - [skymarshal-js](https://github.com/lukeslp/skymarshal-js) -- TypeScript/JS toolkit for AT Protocol
 
-## License
+## Rights and limitations
 
-[CC-BY 4.0](LICENSE). Use it for anything, just credit the source.
+Bluesky users retain ownership of the text they posted. No blanket CC BY grant
+is claimed for user-authored descriptions, post text, or raw records in these
+snapshot files. The repository's license file applies only where the repository
+owner has the rights needed to grant it, such as original code and
+documentation.
 
-Collected from public Bluesky posts via documented AT Protocol APIs. No private data, no scraping, no authentication required.
+The snapshot was collected from public posts through documented AT Protocol
+interfaces. “Public” does not mean anonymous: the released schema includes
+direct and stable identifiers and raw records. Users should account for source
+authors' rights, deletion requests, contextual integrity, and re-identification
+risk before reuse.
 
 ## Author
 
